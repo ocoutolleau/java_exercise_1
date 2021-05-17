@@ -1,9 +1,13 @@
-import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Launcher {
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         System.out.println("coucou");
         Scanner scanner = new Scanner(System.in);
 
@@ -11,24 +15,50 @@ public class Launcher {
         do {
             System.out.println("Please, input a command:");
             String command = scanner.nextLine();
-            if ("fibo".equals(command)){
+            if ("fibo".equals(command)) {
                 System.out.println("Input a number:");
                 int n = scanner.nextInt();
                 scanner.nextLine();
                 System.out.println(fibo(n));
-            }
-            else if ("quit".equals(command)){
+            } else if ("freq".equals(command)) {
+                toto();
+            }else if ("quit".equals(command)) {
                 shouldQuit = true;
                 break;
             }
             System.out.println("Unknown command");
-        }while (!shouldQuit);
+        } while (!shouldQuit);
     }
 
-    private static int fibo(int n){
-        return n == 0 || n== 1 ? n : fibo(n-1) + fibo(n-2);
+    private static int fibo(int n) {
+        return n == 0 || n == 1 ? n : fibo(n - 1) + fibo(n - 2);
+    }
+    private static void toto(){
+        String[] words = new String[]{"titi", "toto","tata"};
+
+        Stream<String> wordStream = Arrays.stream(words);
+
+        Map<String, Long> countsByWord = wordStream
+                .filter(s -> !s.isBlank())
+                .map(s -> s.toLowerCase())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        Comparator<Map.Entry<String, Long>> countReversed =
+                Comparator
+                        .<Map.Entry<String, Long>, Long>comparing(e -> e.getValue())
+                        .reversed();
+
+        String threeMostOccurringWords = countsByWord.entrySet().stream()
+                .sorted(countReversed)
+                .limit(3)
+                .map(e -> e.getKey())
+                .collect(Collectors.joining(" "));
+
+
+        System.out.println((threeMostOccurringWords));
     }
 
+}
     /*private static int fibo(int n){
         if (n == 0 || n== 1) {
             return n;
@@ -47,7 +77,7 @@ public class Launcher {
         }
         System.out.println(f2);
     }*/
-}
+
 
         /*System.out.println("ton nom");
         String name = null;
